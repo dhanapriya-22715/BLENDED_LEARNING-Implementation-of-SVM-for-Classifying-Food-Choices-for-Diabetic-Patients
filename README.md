@@ -38,59 +38,57 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Step 1: Load the dataset from the URL
-url = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-ML241EN-SkillsNetwork/labs/datasets/food_items_binary.csv"
-data = pd.read_csv(url)
-
-# Step 2: Data Exploration
-# Display the first few rows and column names for verification
+data=pd.read_csv("food.csv")
 print(data.head())
 print(data.columns)
-
-# Step 3: Selecting Features and Target
-# Define relevant features and target column
-features = ['Calories', 'Total Fat', 'Saturated Fat', 'Sugars', 'Dietary Fiber', 'Protein']
-target = 'class'  # Assuming 'class' is binary (suitable or not suitable for diabetic patients)
-
-X = data[features]
-y = data[target]
-
-# Step 4: Splitting Data
+features=['Calories', 'Total Fat', 'Saturated Fat','Sugars','Dietary Fiber','Protein']
+target='class'
+X=data[features]
+y=data[target]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-
-# Step 5: Feature Scaling
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
+svm=SVC()
+param_grid={
+    'C':[0.1,1.10,100],
+    'kernel':['linear','rbf'],
+    'gamma':['scale','auto']
+}
+grid_search=GridSearchCV(svm,param_grid,cv=5,scoring='accuracy')
+grid_search.fit(X_train,y_train)
+best_model=grid_search.best_estimator_
+print("Name: Dhanappriya s")
+print("Reg No: 212224230056")
+print("Best Parameters:",grid_search.best_params_)
+y_pred=best_model.predict(X_test)
+accuracy=accuracy_score(y_test,y_pred)
+print("Name: Dhanappriya s")
+print("Reg No: 212224230056")
+print("accutacy:",accuracy)
+print("Classification Report:\n",classification_report(y_test,y_pred))
 
-# Step 6: Model Training with SVM
-# Define and train the SVM model with predefined parameters
-svm_model = SVC(kernel='rbf', C=1, gamma='scale')
-svm_model.fit(X_train, y_train)
-
-# Step 7: Model Evaluation
-# Predicting on the test set
-y_pred = svm_model.predict(X_test)
-
-# Calculate accuracy and print classification metrics
-accuracy = accuracy_score(y_test, y_pred)
-print("Accuracy:", accuracy)
-print("Classification Report:\n", classification_report(y_test, y_pred))
-
-# Confusion Matrix
-conf_matrix = confusion_matrix(y_test, y_pred)
-sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", 
-            xticklabels=['Not Suitable', 'Suitable'], yticklabels=['Not Suitable', 'Suitable'])
+conf_matrix=confusion_matrix(y_test,y_pred)
+sns.heatmap(conf_matrix,annot=True,fmt="d",cmap="Blues")
 plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.title("Confusion Matrix")
 plt.show()
-
 ```
 
 ## Output:
-![Screenshot (213)](https://github.com/user-attachments/assets/7fd07c40-201f-458a-8988-ed82e04e035c)
-![Screenshot (214)](https://github.com/user-attachments/assets/3b95009c-8ba6-478d-80e6-83b718dabf19)
+
+<img width="905" height="481" alt="image" src="https://github.com/user-attachments/assets/d814a7d9-5754-47dd-a903-9d75af583dee" />
+
+
+<img width="757" height="175" alt="image" src="https://github.com/user-attachments/assets/e724d69b-8305-44d5-ba19-99d640d62bcf" />
+
+<img width="886" height="243" alt="image" src="https://github.com/user-attachments/assets/a3f07a23-8cb5-41f5-a660-a494b2fd2eb4" />
+
+<img width="775" height="443" alt="image" src="https://github.com/user-attachments/assets/e165b1ec-3ff5-48c6-8a32-215766fb1aec" />
+
+
+<img width="900" height="586" alt="image" src="https://github.com/user-attachments/assets/0c95f953-8c4c-45d4-b1ca-aa0885b5b766" />
 
 ## Result:
 Thus, the SVM model was successfully implemented to classify food items for diabetic patients, with hyperparameter tuning optimizing the model's performance.
